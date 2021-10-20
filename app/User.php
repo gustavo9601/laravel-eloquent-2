@@ -45,4 +45,15 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserProfile::class);
     }
+
+    /*
+     * Un usuario (author) tiene muchos posts
+     * */
+    public function posts()
+    {
+        // return $this->hasMany(Post::class);
+        // Especificando la llave foranea en la tabla posts
+        return $this->hasMany(Post::class, 'author_id');
+    }
+
 }
