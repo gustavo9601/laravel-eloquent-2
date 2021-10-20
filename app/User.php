@@ -37,6 +37,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+
+    /*
+     * Un usuario tiene un perfil
+     * */
     public function profile()
     {
         return $this->hasOne(UserProfile::class);

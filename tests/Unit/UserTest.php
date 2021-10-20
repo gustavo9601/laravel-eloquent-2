@@ -24,9 +24,11 @@ class UserTest extends TestCase
             'website' => 'https://styde.net',
             'user_id' => $user->id,
         ]);
-
+        // Verifica que la instancia sea la misma
         $this->assertInstanceOf(UserProfile::class, $user->profile);
+        // Verifica que sea el mismo perfil
         $this->assertTrue($userProfile->is($user->profile));
+        // Verifica que tenga la misma url
         $this->assertSame('https://styde.net', $user->profile->website);
     }
 }
