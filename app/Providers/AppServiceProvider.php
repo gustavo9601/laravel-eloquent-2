@@ -13,7 +13,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // Registrando Telescope manualmente,
+        // 1. Se debe eliminar de config/app.php el TelescopeServiceProvider
+        if($this->app->environment('local')){
+            $this->app->register(TelescopeServiceProvider::class);
+        }
+
     }
 
     /**
