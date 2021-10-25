@@ -9,7 +9,18 @@ class Post extends Model
 {
 
     protected $fillable = [
-        'title', 'content'
+        'title', 'content', 'featured', 'published_at'
+    ];
+
+
+    protected $casts = [
+        'featured' => 'bool',
+        'published_at' => 'datetime:d/m/Y H:i',
+    ];
+
+    //Especifica unicamente los campos a mostrar
+    protected $visible = [
+        'title', 'content', 'published_at', 'author', 'categories',
     ];
 
     /*
@@ -34,7 +45,11 @@ class Post extends Model
      * */
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'category_post');
+        // withPivot(['featured']) // permite especificar que campos se quieren añadir a la vista de la tabla pivote
+        // withTimesTamps // permite que tenga encuentra los campos de creacion y atualizacion
+        return $this->belongsToMany(Category::class, 'category_post')
+            ->withPivot(['featured'])
+            ->withTimestamps();
     }
 
     /*
@@ -43,6 +58,7 @@ class Post extends Model
      * */
     public function addCategories(Category ...$categories)
     {
-        $this->categories()->sync(new Collection($categories));
+        // syncWithoutDetaching // añade los regustros nuevos pero no elimina los existentes
+        $this->categories()->syncWithoutDetaching(new Collection($categories));
     }
 }

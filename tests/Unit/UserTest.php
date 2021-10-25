@@ -58,4 +58,45 @@ class UserTest extends TestCase
         $this->assertTrue($posts[0]->is($firstPost));
         $this->assertTrue($posts[1]->is($secondPost));
     }
+
+    /** @test */
+    function gets_the_published_posts_of_a_user()
+    {
+        $user = factory(User::class)->create();
+
+        $published = factory(Post::class)->create([
+            'author_id' => $user->id,
+            'published_at' => now(),
+        ]);
+
+        $draft = factory(Post::class)->create([
+            'author_id' => $user->id,
+            'published_at' => null,
+        ]);
+
+        $scheduled = factory(Post::class)->create([
+            'author_id' => $user->id,
+            'published_at' => now()->addDay(),
+        ]);
+
+        $this->assertInstanceOf(HasMany::class, $user->publishedPosts());
+        $this->assertInstanceOf(Collection::class, $user->publishedPosts);
+        $this->assertCount(1, $user->publishedPosts);
+        $this->assertTrue($user->publishedPosts->first()->is($published));
+    }
+
+    /**
+     * @test
+     * @testdox Verifica si el usuario es administrador.
+     */
+    function verifies_if_the_user_is_an_admin()
+    {
+        $user = factory(User::class)->create();
+
+        $user->role = 'user';
+        $this->assertFalse($user->isAdmin());
+
+        $user->role = 'admin';
+        $this->assertTrue($user->isAdmin());
+    }
 }

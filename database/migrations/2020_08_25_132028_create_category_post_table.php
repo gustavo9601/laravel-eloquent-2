@@ -23,8 +23,11 @@ class CreateCategoryPostTable extends Migration
             $table->foreign('post_id')
                 ->references('id')
                 ->on('posts');
+            $table->boolean('featured')->default(false);
 
             $table->unique(['category_id', 'post_id']);
+
+            $table->timestamps();
         });
     }
 

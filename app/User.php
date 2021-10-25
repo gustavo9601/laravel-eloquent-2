@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'options', 'apí_token'
     ];
 
     /**
@@ -35,6 +35,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'options' => 'array',  // accessor a array
     ];
 
 
@@ -43,7 +44,16 @@ class User extends Authenticatable
      * */
     public function profile()
     {
+
+
         return $this->hasOne(UserProfile::class);
+
+
+        /*
+         * withDefault // devuelve un objeto y adiciona los valores por default, de no exisitir la relacion
+         * return $this->hasOne(UserProfile::class)->withDefault([
+            'website' => 'url'
+        ]);*/
     }
 
     /*
@@ -54,6 +64,50 @@ class User extends Authenticatable
         // return $this->hasMany(Post::class);
         // Especificando la llave foranea en la tabla posts
         return $this->hasMany(Post::class, 'author_id');
+    }
+
+
+    public function publishedPosts()
+    {
+        return $this->posts()->where('published_at', '<=', now());
+    }
+
+    /*
+     * Mutators
+     * */
+
+    // set<<Name Attribute>>Attribute
+    public function setEmailAttribute($value)
+    {
+        $this->attributes['email'] = strtolower($value);
+    }
+
+
+    public function setOptionsAttribute(array $value)
+    {
+        $this->attributes['options'] = json_encode($value);
+    }
+
+
+    /*
+     * Accessors
+     * */
+    // get<<Name Attribute>>Attribute
+    public function getNameAttribute($value)
+    {
+        return strtoupper($value);
+    }
+
+    // atributo virtual
+    // $user->full_name
+    public function getFullNameAttribute()
+    {
+        return $this->name . ' AAAAA';
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 
 }

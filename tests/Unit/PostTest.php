@@ -26,4 +26,27 @@ class PostTest extends TestCase
         $this->assertInstanceOf(User::class, $post->author);
         $this->assertTrue($post->author->is($user));
     }
+
+    /**
+     * @test
+     * @testdox Exporta el título, contenido, fecha y estado de publicación de los posts.
+     */
+    function exports_the_title_content_published_date_and_status_of_the_posts()
+    {
+        $post = factory(Post::class)->create([
+            'title' => 'Título del post',
+            'content' => 'Contenido del post',
+            'published_at' => '2020-09-01 12:00:00',
+        ]);
+
+        $expected = [
+            'title' => 'Título del post',
+            'content' => 'Contenido del post',
+            'published_at' => '01/09/2020 12:00',
+        ];
+
+        $this->assertSame($expected, $post->toArray());
+        $this->assertSame(json_encode($expected), $post->toJson());
+    }
+
 }

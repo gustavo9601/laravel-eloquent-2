@@ -22,3 +22,20 @@ Route::get('has-one', function () {
 
     return $user->profile;
 });
+
+
+Route::get('filter-query', function () {
+    $user = User::first();
+    return $user->posts()
+        ->where('featured', true)
+        ->where('published_at', '<=', now())
+        ->get();
+
+});
+
+Route::get('filter-query-with-php', function () {
+    $user = User::first();
+    return $user->posts()
+        ->where('featured', true)
+        ->where('published_at', '<=', now());
+});
